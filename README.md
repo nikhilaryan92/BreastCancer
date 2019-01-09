@@ -3,9 +3,7 @@ The deep learning ensemble technique combined with CNN for human breast cancer p
 
 # References
 
-Our manuscipt titled with "A multimodal deep neural network for human breast cancer prognosis prediction by integrating multi-dimensional data" has been accepted by IEEE/ACM Transactions on Computational Biology and Bioinformatics. If you find MDNNMD useful in your research, please consider citing:
-
-Sun, D., Wang, M., & Li, A. (2018). A multimodal deep neural network for human breast cancer prognosis prediction by integrating multi-dimensional data. IEEE/ACM Transactions on Computational Biology and Bioinformatics.
+Our manuscipt titled with "Multi-modal classification for human breast cancer prognosis prediction: Proposal of deep-learning based stacked ensemble model" has been submitted to IEEE/ACM Transactions on Computational Biology and Bioinformatics. If you 
 # Requirements
 [python 3.6](https://www.python.org/downloads/)
 

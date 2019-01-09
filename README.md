@@ -30,15 +30,15 @@ ttest.py
 
 # Process to execute the Stacked-based ensemble model.
 
-=> Run the CNNDNN.py for training CNN-Clinical, CNN-CNA, CNN-Expr, DNN-Clinical, DNN-CNA and DNN-Expr.
+=>  Run the CNNDNN.py for training CNN-Clinical, CNN-CNA, CNN-Expr, DNN-Clinical, DNN-CNA and DNN-Expr.
 
-=> After successfull run you will get the stacked features saved in the file stacked_metadata.csv.
+=>  After successfull run you will get the stacked features saved in the file stacked_metadata.csv.
 
-=> Convert the stacked_metadata.csv file to stacked_metadata.arrf file.
+=>  Convert the stacked_metadata.csv file to stacked_metadata.arrf file.
 
-=> Load the STACKED_RF_HIDDEN.model in weka 3.8.3 and pass the stacked feature to get the final prediction output.
+=>  Load the STACKED_RF_HIDDEN.model in weka 3.8.3 and pass the stacked feature to get the final prediction output.
 
-=> Once final prediction has been made use ttest.py to perform statistical significance test.
+=>  Once final prediction has been made use ttest.py to perform statistical significance test.
 
 
 

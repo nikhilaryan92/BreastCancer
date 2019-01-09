@@ -37,9 +37,10 @@ ttest.py
 
 =>  After successfull run you will get the hidden features in three different csv files : clinical_metadata.csv, cnv_metadata.csv and exp_metadata.csv
 
-=> Combine all the hidden features different modalities to form stacked features : stacked_metadata.csv
+=> Combine all the hidden features of different modalities to form stacked features : stacked_metadata.csv
 
 =>  Convert the stacked_metadata.csv file to stacked_metadata.arff file. 
+
 =>  Load the STACKED_RF_HIDDEN.model in weka 3.8.3 and pass the stacked feature(stacked_metadata.arff) to get the final prediction output.
 
 =>  Once final prediction has been made use ttest.py to perform statistical significance test.

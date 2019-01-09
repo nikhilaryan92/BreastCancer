@@ -23,7 +23,9 @@ Sun, D., Wang, M., & Li, A. (2018). A multimodal deep neural network for human b
 
 # Usage
 CNNDNN.py
+
 STACKED_RF_HIDDEN.model
+
 ttest.py
 
 # Process to execute the Stacked-based ensemble model.

@@ -9,18 +9,33 @@ from keras.layers.convolutional import Conv1D
 import matplotlib.pyplot as plt
 from keras.callbacks import LearningRateScheduler
 from sklearn.metrics import classification_report, confusion_matrix 
+
 epochs = 20
+epochs_dnn = 40
 
 
 # fix random seed for reproducibility
 numpy.random.seed(1)
-# load Clinical dataset
-dataset_clinical = numpy.loadtxt("/home/nikhil/Desktop/Project/nik/Data/METABRIC_clinical_1980.txt", delimiter=" ")
-#dataset_clinical = numpy.loadtxt("/home/nikhil/Desktop/Project/MDNNMD/data/Stratified Data/Clinical.txt", delimiter=" ")
 
+# load Clinical dataset
+dataset_clinical = numpy.loadtxt("/home/nikhil/Desktop/Project/nik/Data/METABRIC_clinical_1980.txt", delimiter=" ")#change the path to your local system	
 # split into input (X) and output (Y) variables
 X_clinical = dataset_clinical[:,0:25]
 Y_clinical = dataset_clinical[:,25]
+
+# load CNV dataset
+dataset_cnv = numpy.loadtxt("/home/nikhil/Desktop/Project/nik/Data/METABRIC_cnv_1980.txt", delimiter=" ") #change the path to your local system
+# split into input (X) and output (Y) variables
+X_cnv = dataset_cnv[:,0:200]
+Y_cnv = dataset_cnv[:,200]
+
+dataset_exp = numpy.loadtxt("/home/nikhil/Desktop/Project/nik/Data/METABRIC_gene_exp_1980.txt", delimiter=" ")#change the path to your local system
+# split into input (X) and output (Y) variables
+X_exp = dataset_exp[:,0:400]
+Y_exp = dataset_exp[:,400]
+
+
+print('Training the Clinical CNN')
 kfold = StratifiedKFold(n_splits=10, shuffle=False, random_state=1)
 cvscores_clinical = []
 i=1
@@ -40,10 +55,6 @@ for train_index, test_index in kfold.split(X_clinical, Y_clinical):
 	dense1 = Dense(150,activation='tanh',name='dense1',kernel_initializer=init,bias_initializer=bias_init)(flat1)
 	output = Dense(1, activation='sigmoid',name='output',activity_regularizer= regularizers.l2(0.01),kernel_initializer=init,bias_initializer=bias_init)(dense1)
 	clinical_model = Model(inputs=main_input1, outputs=output)
-	# summarize layers
-	#print(model.summary())
-	# plot graph
-	#plot_model(model, to_file='/home/nikhil/Desktop/Project/nik/Code/Submodels/Model Design/CNN Clinical.png')
 	clinical_model.compile(loss='binary_crossentropy', optimizer='adam', metrics=['accuracy'])
 	x_train, x_val, y_train, y_val = train_test_split(x_train_clinical, y_train_clinical, test_size=0.2,stratify=y_train_clinical)
 	clinical_model.fit(x_train, y_train, epochs=epochs, batch_size=8,verbose=2,validation_data=(x_val,y_val))	
@@ -51,14 +62,10 @@ for train_index, test_index in kfold.split(X_clinical, Y_clinical):
 	clinical_scores = clinical_model.evaluate(x_test_clinical, y_test_clinical,verbose=2)
 	print("%s: %.2f%%" % (clinical_model.metrics_names[1], clinical_scores[1]*100))
 	cvscores_clinical.append(clinical_scores[1] * 100)
+	intermediate_layer_clinical = Model(inputs=main_input1,outputs=dense1)
 print("Accuracy = %.2f%% (+/- %.2f%%)\n" % (numpy.mean(cvscores_clinical), numpy.std(cvscores_clinical)))
 
-# load CNV dataset
-dataset_cnv = numpy.loadtxt("/home/nikhil/Desktop/Project/nik/Data/METABRIC_cnv_1980.txt", delimiter=" ")
-#dataset_cnv = numpy.loadtxt("/home/nikhil/Desktop/Project/MDNNMD/data/cnv.txt", delimiter=",")
-# split into input (X) and output (Y) variables
-X_cnv = dataset_cnv[:,0:200]
-Y_cnv = dataset_cnv[:,200]
+print('Training the CNA CNN')
 kfold = StratifiedKFold(n_splits=10, shuffle=False, random_state=1)
 cvscores_cnv = []
 i=1
@@ -83,24 +90,18 @@ for train_index, test_index in kfold.split(X_cnv, Y_cnv):
 	dropout2 = Dropout(0.25,name='dropout2')(dense1)
 	output = Dense(1, activation='sigmoid',activity_regularizer= regularizers.l2(0.01),kernel_initializer=init,bias_initializer=bias_init)(dropout2)
 	cnv_model =	Model(inputs=main_input1, outputs=output)
-	# summarize layers
-	#print(model.summary())
-	# plot graph
-	#plot_model(model, to_file='/home/nikhil/Desktop/Project/nik/Code/Submodels/Model Design/CNN CNV.png')
 	cnv_model.compile(loss='binary_crossentropy', optimizer='adam', metrics=['accuracy'])
 	x_train, x_val, y_train, y_val = train_test_split(x_train_cnv, y_train_cnv, test_size=0.2,stratify=y_train_cnv)
 	cnv_model.fit(x_train_cnv, y_train_cnv, epochs=epochs,validation_data=(x_val,y_val), batch_size=8,verbose=2)
 	cnv_scores = cnv_model.evaluate(x_test_cnv, y_test_cnv,verbose=2)
 	print("%s: %.2f%%" % (cnv_model.metrics_names[1], cnv_scores[1]*100))
 	cvscores_cnv.append(cnv_scores[1] * 100)	
+	intermediate_layer_cnv = Model(inputs=main_input1,outputs=dropout2)
 print("%.2f%% (+/- %.2f%%)" % (numpy.mean(cvscores_cnv), numpy.std(cvscores_cnv)))
 
 
-dataset_exp = numpy.loadtxt("/home/nikhil/Desktop/Project/nik/Data/METABRIC_gene_exp_1980.txt", delimiter=" ")
-# split into input (X) and output (Y) variables
-X_exp = dataset_exp[:,0:400]
-Y_exp = dataset_exp[:,400]
-#Spliting the data set into training and testing
+
+print('Training the Expr CNN')
 kfold = StratifiedKFold(n_splits=10, shuffle=False, random_state=1)
 cvscores_exp = []
 i=1
@@ -124,17 +125,16 @@ for train_index, test_index in kfold.split(X_exp, Y_exp):
 	dropout2 = Dropout(0.25,name='dropout2')(dense1)
 	output = Dense(1, activation='sigmoid',activity_regularizer= regularizers.l2(0.01),kernel_initializer=init,bias_initializer=bias_init)(dropout2)
 	exp_model =	Model(inputs=main_input1, outputs=output)
-	# summarize layers
-	#print(model.summary())
-	# plot graph
-	#plot_model(model, to_file='/home/nikhil/Desktop/Project/nik/Code/Submodels/Model Design/CNN Gene Exp.png')
 	exp_model.compile(loss='binary_crossentropy', optimizer='adam', metrics=['accuracy'])
 	x_train, x_val, y_train, y_val = train_test_split(x_train_exp, y_train_exp, test_size=0.2,stratify=y_train_exp)	
 	exp_model.fit(x_train, y_train, epochs=epochs, batch_size=8,verbose=2,validation_data=(x_val,y_val))
 	exp_scores = exp_model.evaluate(x_test_exp, y_test_exp,verbose=2)
 	print("%s: %.2f%%" % (exp_model.metrics_names[1], exp_scores[1]*100))
 	cvscores_exp.append(exp_scores[1] * 100)
+	intermediate_layer_exp = Model(inputs=main_input1,outputs=dropout2)
 print("%.2f%% (+/- %.2f%%)" % (numpy.mean(cvscores_exp), numpy.std(cvscores_exp)))
+
+print('Training the Clinical DNN')
 i=1
 for train_index, test_index in kfold.split(X_clinical, Y_clinical):
 	print(i,"th Fold *****************************************")
@@ -158,11 +158,7 @@ for train_index, test_index in kfold.split(X_clinical, Y_clinical):
 	init = initializers.TruncatedNormal(mean=0.0, stddev=1.0 / math.sqrt(float(100)/2), seed=1)
 	output = Dense(1,name='output',activation='sigmoid',activity_regularizer= regularizers.l2(0.01),kernel_initializer=init,bias_initializer=bias_init)(dense4)
 	model_dnnclinical = Model(inputs = main_input1, outputs = output )
-	# summarize layers
-	#print(model_clinical.summary())
-	# plot Model
-	#plot_model(model_clinical, to_file='/home/nikhil/Desktop/Project/nik/Code/Submodels/Model Design/DNN Clinical.png')
-	# Compile model
+
 
 	def exp_decay(epoch):
 		initial_lrate = 0.001
@@ -175,11 +171,12 @@ for train_index, test_index in kfold.split(X_clinical, Y_clinical):
 	model_dnnclinical.compile(loss='binary_crossentropy', optimizer=adams, metrics=['accuracy'])
 	x_train, x_val, y_train, y_val = train_test_split(x_train_clinical, y_train_clinical, test_size=0.2,stratify = y_train_clinical)
 	# Fit the model
-	model_dnnclinical.fit(x_train, y_train, epochs=40, batch_size=64,verbose=2,validation_data=(x_val,y_val),callbacks=[lrate])
+	model_dnnclinical.fit(x_train, y_train, epochs=epochs_dnn, batch_size=64,verbose=2,validation_data=(x_val,y_val),callbacks=[lrate])
 	# evaluate the model
 	clinical_scores = model_dnnclinical.evaluate(x_test_clinical, y_test_clinical, verbose=0)
 	print("%s: %.2f%%" % (model_dnnclinical.metrics_names[1], clinical_scores[1]*100))
-	
+
+print('Training the CNA DNN')	
 i=1
 for train_index, test_index in kfold.split(X_cnv, Y_cnv):
 	print(i,"th Fold *****************************************")
@@ -204,11 +201,7 @@ for train_index, test_index in kfold.split(X_cnv, Y_cnv):
 	init = initializers.TruncatedNormal(mean=0.0, stddev=1.0 / math.sqrt(float(100)/2), seed=1)
 	output = Dense(1,name='output',activation='sigmoid',activity_regularizer= regularizers.l2(0.01),kernel_initializer=init,bias_initializer=bias_init)(dense4)
 	model_dnncnv = Model(inputs = main_input1, outputs = output )
-	# summarize layers
-	#print(model_cnv.summary())
-	# plot Model
-	#plot_model(model_cnv, to_file='/home/nikhil/Desktop/Project/nik/Code/Submodels/Model Design/DNN CNV.png')
-	# Compile model
+
 
 	def exp_decay(epoch):
 		initial_lrate = 0.00001
@@ -226,6 +219,8 @@ for train_index, test_index in kfold.split(X_cnv, Y_cnv):
 	# evaluate the model
 	cnv_scores = model_dnncnv.evaluate(x_test_cnv, y_test_cnv,verbose=0)
 	print("%s: %.2f%%" % (model_dnncnv.metrics_names[1], cnv_scores[1]*100))
+
+print('Training the Expr DNN')
 i=1
 for train_index, test_index in kfold.split(X_exp, Y_exp):
 	print(i,"th Fold *****************************************")
@@ -250,11 +245,6 @@ for train_index, test_index in kfold.split(X_exp, Y_exp):
 	init = initializers.TruncatedNormal(mean=0.0, stddev=1.0 / math.sqrt(float(100)/2), seed=1)
 	output = Dense(1,name='output',activation='sigmoid',activity_regularizer= regularizers.l2(0.01),kernel_initializer=init,bias_initializer=bias_init)(dense4)
 	model_dnnexp = Model(inputs = main_input1, outputs = output )
-	# summarize layers
-	#model_exp.summary()
-	# plot Model
-	#plot_model(model_exp, to_file='/home/nikhil/Desktop/Project/nik/Code/Submodels/Model Design/DNN Gene.png')
-	# Compile model
 
 	def exp_decay(epoch):
 		initial_lrate = 0.00001
@@ -274,7 +264,30 @@ for train_index, test_index in kfold.split(X_exp, Y_exp):
 	print("%s: %.2f%%" % (model_dnnexp.metrics_names[1], exp_scores[1]*100))
 
 
+X_clinical_ = numpy.expand_dims(X_clinical, axis=2)
+# for extracting final layer features 
+#y_pred_ =  clinical_model.predict(X_clinical_)
+# for extracting one layer before final layer features
+y_pred_clinical = intermediate_layer_clinical.predict(X_clinical_)
 
+X_cnv_ = numpy.expand_dims(X_cnv, axis=2)
+# for extracting final layer features 
+#y_pred_ =  cnv_model.predict(X_cnv_)
+# for extracting one layer before final layer features
+y_pred_cnv = intermediate_layer_cnv.predict(X_cnv_)
+
+X_exp_ = numpy.expand_dims(X_exp, axis=2)
+# for extracting final layer features 
+#y_pred_ =  exp_model.predict(X_exp_)
+# for extracting one layer before final layer features
+y_pred_exp = intermediate_layer_exp.predict(X_exp_)
+
+stacked_feature=numpy.concatenate((y_pred_clinical,y_pred_cnv,y_pred_exp,Y_clinical[:,None]),axis=1)
+with open('/home/nikhil/Desktop/Project/nik/Code/Submodels/CNN/stacked_metadata.csv', 'w') as f:    #change the path to your local system
+	for item_clinical in stacked_feature:
+		for elem in item_clinical:
+			f.write(str(elem)+'\t')
+		f.write('\n')
 
 #Plotting
 X_train_clinical, X_test_clinical, y_train_clinical, y_test_clinical = train_test_split(X_clinical, Y_clinical, test_size=0.2,stratify=Y_clinical)
@@ -315,7 +328,6 @@ plt.ylim([0, 1])
 plt.ylabel('True Positive Rate(Sn)')
 plt.xlabel('Flase Positive Rate(1-Sp)')
 plt.show()
-
 
 
 

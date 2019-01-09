@@ -21,7 +21,11 @@ Our manuscipt titled with "Multi-modal classification for human breast cancer pr
 [Weka 3.8.3](https://www.cs.waikato.ac.nz/ml/weka/downloading.html)
 
 # Usage
-CNNDNN.py
+cnn_clinical.py
+
+cnn_cnv.py
+
+cnn_exp.py
 
 STACKED_RF_HIDDEN.model
 
@@ -29,12 +33,13 @@ ttest.py
 
 # Process to execute the Stacked-based ensemble model.
 
-=>  Run the CNNDNN.py for training CNN-Clinical, CNN-CNA, CNN-Expr, DNN-Clinical, DNN-CNA and DNN-Expr.
+=>  Run cnn_clinical.py, cnn_cnv.py, cnn_exp.py for training individual CNNs for clinical, CNA, and gene-expression data.
 
-=>  After successfull run you will get the stacked features saved in the file stacked_metadata.csv.
+=>  After successfull run you will get the hidden features in three different csv files : clinical_metadata.csv, cnv_metadata.csv and exp_metadata.csv
 
-=>  Convert the stacked_metadata.csv file to stacked_metadata.arff file. (The stacked_metadata.arff file is given in Data folder)
+=> Combine all the hidden features different modalities to form stacked features : stacked_metadata.csv
 
+=>  Convert the stacked_metadata.csv file to stacked_metadata.arff file. 
 =>  Load the STACKED_RF_HIDDEN.model in weka 3.8.3 and pass the stacked feature(stacked_metadata.arff) to get the final prediction output.
 
 =>  Once final prediction has been made use ttest.py to perform statistical significance test.

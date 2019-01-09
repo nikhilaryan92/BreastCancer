@@ -33,7 +33,7 @@ ttest.py
 
 # Process to execute the Stacked-based ensemble model.
 
-=>  Run cnn_clinical.py, cnn_cnv.py, cnn_exp.py for training individual CNNs for clinical, CNA, and gene-expression data.
+=>  Run cnn_clinical.py, cnn_cnv.py, cnn_exp.py for training individual CNNs for clinical, CNA and gene-expression data.
 
 =>  After successfull run you will get the hidden features in three different csv files : clinical_metadata.csv, cnv_metadata.csv and exp_metadata.csv
 

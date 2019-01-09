@@ -3,7 +3,8 @@ The deep learning ensemble technique combined with CNN for human breast cancer p
 
 # References
 
-Our manuscipt titled with "Multi-modal classification for human breast cancer prognosis prediction: Proposal of deep-learning based stacked ensemble model" has been submitted to IEEE/ACM Transactions on Computational Biology and Bioinformatics. If you 
+Our manuscipt titled with "Multi-modal classification for human breast cancer prognosis prediction: Proposal of deep-learning based stacked ensemble model" has been submitted to IEEE/ACM Transactions on Computational Biology and Bioinformatics.
+
 # Requirements
 [python 3.6](https://www.python.org/downloads/)
 

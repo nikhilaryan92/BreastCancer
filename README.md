@@ -8,9 +8,17 @@ Our manuscipt titled with "A multimodal deep neural network for human breast can
 Sun, D., Wang, M., & Li, A. (2018). A multimodal deep neural network for human breast cancer prognosis prediction by integrating multi-dimensional data. IEEE/ACM Transactions on Computational Biology and Bioinformatics.
 # Requirements
 [python 3.6](https://www.python.org/downloads/)
+
+
 [TensorFilow 1.12](https://www.tensorflow.org/install/)
+
+
 [scikit-learn 0.20.0](http://scikit-learn.org/stable/)
+
+
 [matplotlib 3.0.1](https://matplotlib.org/users/installing.html)
+
+
 [Weka 3.8.3](https://www.cs.waikato.ac.nz/ml/weka/downloading.html)
 
 # Usage

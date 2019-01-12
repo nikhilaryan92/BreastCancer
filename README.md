@@ -11,6 +11,8 @@ Our manuscipt titled with "Multi-modal classification for human breast cancer pr
 
 [TensorFilow 1.12](https://www.tensorflow.org/install/)
 
+[keras 2.2.4](https://pypi.org/project/Keras/)
+
 
 [scikit-learn 0.20.0](http://scikit-learn.org/stable/)
 

@@ -20,7 +20,6 @@ Our manuscipt titled with "Multi-modal classification for human breast cancer pr
 [matplotlib 3.0.1](https://matplotlib.org/users/installing.html)
 
 
-[Weka 3.8.3](https://www.cs.waikato.ac.nz/ml/weka/downloading.html)
 
 # Usage
 cnn_clinical.py
@@ -41,9 +40,7 @@ ttest.py
 
 => Combine all the hidden features of different modalities to form stacked features : stacked_metadata.csv
 
-=>  Convert the stacked_metadata.csv file to stacked_metadata.arff file. 
-
-=>  Load the STACKED_RF_HIDDEN.model in weka 3.8.3 and pass the stacked feature(stacked_metadata.arff) to get the final prediction output.
+=>  run RF.py and pass the stacked feature(stacked_metadata.csv) as input to get the final prediction output.
 
 =>  Once final prediction has been made use ttest.py to perform statistical significance test.
 
